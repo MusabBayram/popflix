@@ -15,3 +15,13 @@ export const getPopularMovies = async () => {
     });
     return response.data.results;
 };
+
+export const getMovieDetails = async (id: string) => {
+    const response = await axios.get(`${BASE_URL}/movie/${id}`, {
+        params: {
+            api_key: API_KEY,
+            language: "en-US",
+        },
+    });
+    return response.data;
+};
