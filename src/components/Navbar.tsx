@@ -1,0 +1,90 @@
+import { useNavigate, Link } from "react-router-dom";
+import { FormEvent, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+
+const Navbar = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const currentQuery = new URLSearchParams(location.search).get("q") || "";
+  const [query, setQuery] = useState(currentQuery);
+  const [theme, setTheme] = useState(
+    () => localStorage.getItem("theme") || "dark"
+  );
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (query.trim()) {
+      navigate(`/search?q=${encodeURIComponent(query.trim())}`);
+      setQuery("");
+    }
+  };
+
+  return (
+    <>
+      <div className="absolute top-8 -translate-y-1/2 right-4 z-50 flex items-center">
+        <label className="inline-flex items-center cursor-pointer relative self-center">
+          <input
+            type="checkbox"
+            className="sr-only peer"
+            checked={theme === "dark"}
+            onChange={toggleTheme}
+          />
+          <div className="w-12 h-6 bg-gray-300 dark:bg-gray-700 rounded-full peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-yellow-400 peer-checked:bg-yellow-400 relative after:content-[''] after:absolute after:top-[2px] after:left-[1px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-transform peer-checked:after:translate-x-6">
+            <span className="absolute left-1 top-1/2 -translate-y-1/2 text-[10px] text-yellow-500 z-10">
+              ☀️
+            </span>
+            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-white z-10">
+              🌙
+            </span>
+          </div>
+        </label>
+      </div>
+      <nav className="relative bg-[#f8f9fa] dark:bg-gray-900 border-b border-gray-300 dark:border-gray-700 text-black dark:text-white px-6 py-4 shadow-sm">
+        <div className="max-w-6xl mx-auto relative">
+          {/* Flex Row for Desktop, Column for Mobile */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            {/* Logo */}
+            <Link to="/" className="text-2xl font-bold tracking-wide">
+              🎬 Popflix
+            </Link>
+
+            {/* Search Form */}
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto"
+            >
+              <input
+                type="text"
+                placeholder={
+                  currentQuery
+                    ? `"${currentQuery}" arama sonuçları...`
+                    : "Film ara..."
+                }
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring focus:ring-yellow-400 w-full md:w-[400px]"
+              />
+              <button
+                type="submit"
+                className="bg-yellow-400 text-black px-4 py-1 rounded-full hover:bg-yellow-500 transition w-full sm:w-auto"
+              >
+                Ara
+              </button>
+            </form>
+          </div>
+        </div>
+      </nav>
+    </>
+  );
+};
+
+export default Navbar;
