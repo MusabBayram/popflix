@@ -1,6 +1,7 @@
 import { useNavigate, Link } from "react-router-dom";
 import { FormEvent, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -10,6 +11,15 @@ const Navbar = () => {
   const [theme, setTheme] = useState(
     () => localStorage.getItem("theme") || "dark"
   );
+  const [hasFavorites, setHasFavorites] = useState(false);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("favorites");
+    if (stored) {
+      const favs = JSON.parse(stored) as number[];
+      setHasFavorites(favs.length > 0);
+    }
+  }, []);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
@@ -30,7 +40,21 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="absolute top-8 -translate-y-1/2 right-4 z-50 flex items-center">
+      <div className="flex items-center gap-2 absolute top-8 -translate-y-1/2 right-4 z-50">
+        <span
+          onClick={() =>
+            location.pathname === "/favorites"
+              ? navigate("/")
+              : navigate("/favorites")
+          }
+          className="cursor-pointer text-2xl text-black dark:text-white hover:scale-110 transition"
+        >
+          {location.pathname === "/favorites" ? (
+            <AiFillHeart />
+          ) : (
+            <AiOutlineHeart />
+          )}
+        </span>
         <label className="inline-flex items-center cursor-pointer relative self-center">
           <input
             type="checkbox"
@@ -52,10 +76,12 @@ const Navbar = () => {
         <div className="max-w-6xl mx-auto relative">
           {/* Flex Row for Desktop, Column for Mobile */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            {/* Logo */}
-            <Link to="/" className="text-2xl font-bold tracking-wide">
-              🎬 Popflix
-            </Link>
+            {/* Logo & Favoriler Link */}
+            <div className="flex items-center gap-6">
+              <Link to="/" className="text-2xl font-bold tracking-wide">
+                🎬 Popflix
+              </Link>
+            </div>
 
             {/* Search Form */}
             <form
