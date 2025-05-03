@@ -33,7 +33,7 @@ const RecentMovies: React.FC<RecentMoviesProps> = ({ movies }) => {
   return (
     <div className="relative z-10 max-w-6xl mx-auto px-6 pb-16">
       <h2 className="text-2xl font-bold mb-4 text-white">
-        Son Ziyaret Edilen Filmler
+        Recently Viewed Movies
       </h2>
       {movies.length > 0 ? (
         <div className="relative">
@@ -72,7 +72,7 @@ const RecentMovies: React.FC<RecentMoviesProps> = ({ movies }) => {
           </button>
         </div>
       ) : (
-        <p className="text-white">Henüz görüntülenen film yok.</p>
+        <p className="text-white">No recently viewed movies.</p>
       )}
     </div>
   );

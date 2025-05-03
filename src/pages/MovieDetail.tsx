@@ -82,7 +82,7 @@ function MovieDetail() {
               d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
             ></path>
           </svg>
-          <p className="text-lg font-medium">Yükleniyor...</p>
+          <p className="text-lg font-medium">Loading...</p>
         </div>
       </div>
     );

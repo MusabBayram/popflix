@@ -32,7 +32,7 @@ const SimilarMovies: React.FC<SimilarMoviesProps> = ({ movies }) => {
 
   return (
     <div className="relative z-10 max-w-6xl mx-auto px-6 pb-16">
-      <h2 className="text-2xl font-bold mb-4 text-white">Benzer Filmler</h2>
+      <h2 className="text-2xl font-bold mb-4 text-white">Similar Movies</h2>
       {movies.length > 0 ? (
         <div className="relative">
           <button
@@ -70,7 +70,7 @@ const SimilarMovies: React.FC<SimilarMoviesProps> = ({ movies }) => {
           </button>
         </div>
       ) : (
-        <p className="text-white">Benzer film bulunamadı.</p>
+        <p className="text-white">No similar movies found.</p>
       )}
     </div>
   );

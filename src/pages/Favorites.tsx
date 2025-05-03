@@ -27,11 +27,11 @@ const Favorites = () => {
 
   return (
     <div className="p-8 min-h-screen bg-white dark:bg-black text-black dark:text-white">
-      <h1 className="text-2xl font-bold mb-6">Favori Filmlerim</h1>
+      <h1 className="text-2xl font-bold mb-6">My Favorite Movies</h1>
       {loading ? (
-        <p>Yükleniyor...</p>
+        <p>Loading...</p>
       ) : favoriteMovies.length === 0 ? (
-        <p>Henüz favori film eklenmedi.</p>
+        <p>No favorite movies added yet.</p>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
           {favoriteMovies.map((movie) => (

@@ -92,8 +92,8 @@ const Navbar = () => {
                 type="text"
                 placeholder={
                   currentQuery
-                    ? `"${currentQuery}" arama sonuçları...`
-                    : "Film ara..."
+                    ? `"${currentQuery}" search results...`
+                    : "Search for a movie..."
                 }
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
@@ -103,7 +103,7 @@ const Navbar = () => {
                 type="submit"
                 className="bg-yellow-400 text-black px-4 py-1 rounded-full hover:bg-yellow-500 transition w-full sm:w-auto"
               >
-                Ara
+                Search
               </button>
             </form>
           </div>
