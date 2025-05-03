@@ -112,7 +112,7 @@ function MovieDetail() {
             </button>
             <div
               ref={scrollRef}
-              className="flex overflow-x-auto space-x-4 pb-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+              className="flex overflow-x-auto space-x-4 pb-2 custom-scrollbar"
             >
               {similarMovies.map((movie) => (
                 <Link to={`/movie/${movie.id}`} key={movie.id}>
