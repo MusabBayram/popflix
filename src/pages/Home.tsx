@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getPopularMovies } from "../services/tmdb";
+import { discoverMovies, getPopularMovies } from "../services/tmdb";
 import MovieCard from "../components/MovieCard";
 import { useLocation } from "react-router-dom";
 
@@ -20,14 +20,16 @@ const Home = () => {
 
   useEffect(() => {
     const fetchMovies = async () => {
-      const data = await getPopularMovies();
-      const filtered = data.filter(
-        (movie) =>
-          (showTopRated ? movie.vote_average >= 7.5 : true) &&
-          (selectedGenres.length === 0 ||
-            selectedGenres.some((g) => movie.genre_names?.includes(g)))
-      );
-      setMovies(filtered);
+      if (showTopRated || selectedGenres.length > 0) {
+        const data = await discoverMovies({
+          genres: selectedGenres,
+          topRated: showTopRated,
+        });
+        setMovies(data);
+      } else {
+        const data = await getPopularMovies();
+        setMovies(data);
+      }
     };
     fetchMovies();
   }, [showTopRated, selectedGenres]);

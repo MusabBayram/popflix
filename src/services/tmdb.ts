@@ -66,3 +66,37 @@ export const getSimilarMovies = async (id: string) => {
     });
     return response.data.results;
 };
+
+export const discoverMovies = async (filters: {
+    genres?: string[];
+    topRated?: boolean;
+    year?: string;
+}) => {
+    const genreMap = await axios
+        .get(`${BASE_URL}/genre/movie/list`, {
+            params: {
+                api_key: API_KEY,
+                language: "en-US",
+            },
+        })
+        .then((res) =>
+            res.data.genres.reduce((acc: Record<string, number>, genre: any) => {
+                acc[genre.name] = genre.id;
+                return acc;
+            }, {})
+        );
+
+    const genreIds = filters.genres?.map((name) => genreMap[name]).filter(Boolean);
+
+    const response = await axios.get(`${BASE_URL}/discover/movie`, {
+        params: {
+            api_key: API_KEY,
+            language: "en-US",
+            sort_by: filters.topRated ? "vote_average.desc" : "popularity.desc",
+            with_genres: genreIds?.join(","),
+            ...(filters.year ? { primary_release_year: filters.year } : {}),
+        },
+    });
+
+    return response.data.results;
+};
