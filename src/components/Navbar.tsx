@@ -1,7 +1,9 @@
+import FilterModal from "./FilterModal";
 import { useNavigate, Link } from "react-router-dom";
 import { FormEvent, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { BiFilter } from "react-icons/bi";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -12,6 +14,10 @@ const Navbar = () => {
     () => localStorage.getItem("theme") || "dark"
   );
   const [hasFavorites, setHasFavorites] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [showTopRated, setShowTopRated] = useState(false);
+  const [includeRecent, setIncludeRecent] = useState(false);
+  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
 
   useEffect(() => {
     const stored = localStorage.getItem("favorites");
@@ -38,6 +44,46 @@ const Navbar = () => {
     }
   };
 
+  // Custom handlers to update state and URL for filters
+  const handleToggleTopRated = () => {
+    const newVal = !showTopRated;
+    setShowTopRated(newVal);
+    const params = new URLSearchParams(location.search);
+    if (newVal) {
+      params.set("topRated", "true");
+    } else {
+      params.delete("topRated");
+    }
+    navigate(`/?${params.toString()}`);
+  };
+
+  const handleToggleRecent = () => {
+    const newVal = !includeRecent;
+    setIncludeRecent(newVal);
+    const params = new URLSearchParams(location.search);
+    if (newVal) {
+      params.set("recent", "true");
+    } else {
+      params.delete("recent");
+    }
+    navigate(`/?${params.toString()}`);
+  };
+
+  const handleGenreChange = (genre: string) => {
+    const updatedGenres = selectedGenres.includes(genre)
+      ? selectedGenres.filter((g) => g !== genre)
+      : [...selectedGenres, genre];
+    setSelectedGenres(updatedGenres);
+
+    const params = new URLSearchParams(location.search);
+    if (updatedGenres.length) {
+      params.set("genres", updatedGenres.join(","));
+    } else {
+      params.delete("genres");
+    }
+    navigate(`/?${params.toString()}`);
+  };
+
   return (
     <>
       <div className="flex items-center gap-2 absolute top-8 -translate-y-1/2 right-4 z-50">
@@ -54,6 +100,13 @@ const Navbar = () => {
           ) : (
             <AiOutlineHeart />
           )}
+        </span>
+        <span
+          onClick={() => setIsFilterOpen(true)}
+          className="cursor-pointer text-2xl text-black dark:text-white hover:scale-110 transition"
+          title="Filter"
+        >
+          <BiFilter />
         </span>
         <label className="inline-flex items-center cursor-pointer relative self-center">
           <input
@@ -109,6 +162,16 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
+      <FilterModal
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        showTopRated={showTopRated}
+        includeRecent={includeRecent}
+        onToggleTopRated={handleToggleTopRated}
+        onToggleRecent={handleToggleRecent}
+        selectedGenres={selectedGenres}
+        onGenreChange={handleGenreChange}
+      />
     </>
   );
 };
