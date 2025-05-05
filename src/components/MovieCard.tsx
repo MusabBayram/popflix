@@ -50,7 +50,9 @@ const MovieCard = ({ movie }: { movie: Movie }) => {
           />
           <div className="p-4">
             <h3 className="text-lg font-bold truncate">{movie.title}</h3>
-            <p className="text-sm text-yellow-400">⭐ {movie.vote_average}</p>
+            <p className="text-sm text-yellow-400">
+              ⭐ {movie.vote_average.toFixed(1)}
+            </p>
           </div>
         </div>
       </Link>

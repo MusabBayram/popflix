@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 interface FilterModalProps {
   isOpen: boolean;
@@ -9,6 +9,8 @@ interface FilterModalProps {
   onToggleRecent: () => void;
   selectedGenres: string[];
   onGenreChange: (genre: string) => void;
+  minRating: number;
+  onMinRatingChange: (value: number) => void;
 }
 
 const FilterModal: React.FC<FilterModalProps> = ({
@@ -20,7 +22,11 @@ const FilterModal: React.FC<FilterModalProps> = ({
   onToggleRecent,
   selectedGenres,
   onGenreChange,
+  minRating,
+  onMinRatingChange,
 }) => {
+  const [hoverRating, setHoverRating] = useState(0);
+
   return (
     <div
       className={`fixed inset-0 z-50 flex justify-end transition-opacity duration-300 ${
@@ -36,6 +42,15 @@ const FilterModal: React.FC<FilterModalProps> = ({
         } relative`}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Close button for small screens */}
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close"
+          className="absolute top-2 right-4 text-2xl text-gray-700 dark:text-white sm:hidden"
+        >
+          ×
+        </button>
         <h3 className="text-lg font-semibold mb-4">Filter Options</h3>
         <div className="space-y-2 mb-4">
           <label className="flex items-center text-sm cursor-pointer space-x-2">
@@ -72,6 +87,47 @@ const FilterModal: React.FC<FilterModalProps> = ({
               )
             )}
           </div>
+        </div>
+        <div className="mb-4">
+          <h4 className="text-sm font-semibold mb-2">Minimum Rating</h4>
+          <div className="flex space-x-1">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((rating) => (
+              <button
+                key={rating}
+                type="button"
+                onClick={() => onMinRatingChange(rating)}
+                onMouseEnter={() => setHoverRating(rating)}
+                onMouseLeave={() => setHoverRating(0)}
+                className={`text-xl group hover:text-yellow-500 transition-transform duration-150 focus:outline-none relative`}
+                aria-label={`Minimum rating ${rating}`}
+              >
+                <span
+                  className={`block transition-transform duration-150 ${
+                    hoverRating
+                      ? rating <= hoverRating
+                        ? "text-yellow-500 scale-125"
+                        : "text-gray-400"
+                      : rating <= minRating
+                      ? "text-yellow-400"
+                      : "text-gray-400"
+                  }`}
+                >
+                  ★
+                </span>
+              </button>
+            ))}
+          </div>
+          <p className="text-sm mt-1 text-gray-700 dark:text-gray-200 font-medium">
+            Selected Minimum Rating: {minRating > 0 ? minRating : "Not set"}
+          </p>
+          {minRating > 0 && (
+            <button
+              onClick={() => onMinRatingChange(0)}
+              className="mt-2 text-xs text-red-500 hover:underline transition duration-150"
+            >
+              Reset Rating Filter
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -18,6 +18,7 @@ const Navbar = () => {
   const [showTopRated, setShowTopRated] = useState(false);
   const [includeRecent, setIncludeRecent] = useState(false);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+  const [minRating, setMinRating] = useState(0);
 
   useEffect(() => {
     const stored = localStorage.getItem("favorites");
@@ -171,6 +172,17 @@ const Navbar = () => {
         onToggleRecent={handleToggleRecent}
         selectedGenres={selectedGenres}
         onGenreChange={handleGenreChange}
+        minRating={minRating}
+        onMinRatingChange={(value) => {
+          const params = new URLSearchParams(location.search);
+          if (value > 0) {
+            params.set("minRating", value.toString());
+          } else {
+            params.delete("minRating");
+          }
+          navigate(`/?${params.toString()}`);
+          setMinRating(value);
+        }}
       />
     </>
   );

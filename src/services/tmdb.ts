@@ -67,10 +67,26 @@ export const getSimilarMovies = async (id: string) => {
     return response.data.results;
 };
 
+export const getMovieTrailer = async (id: string) => {
+    const response = await axios.get(`${BASE_URL}/movie/${id}/videos`, {
+        params: {
+            api_key: API_KEY,
+            language: "en-US",
+        },
+    });
+
+    const trailers = response.data.results.filter(
+        (video: any) => video.type === "Trailer" && video.site === "YouTube"
+    );
+
+    return trailers.length > 0 ? trailers[0].key : null;
+};
+
 export const discoverMovies = async (filters: {
     genres?: string[];
     topRated?: boolean;
     year?: string;
+    minRating?: number;
 }) => {
     const genreMap = await axios
         .get(`${BASE_URL}/genre/movie/list`, {
@@ -95,8 +111,83 @@ export const discoverMovies = async (filters: {
             sort_by: filters.topRated ? "vote_average.desc" : "popularity.desc",
             with_genres: genreIds?.join(","),
             ...(filters.year ? { primary_release_year: filters.year } : {}),
+            ...(typeof filters.minRating === 'number' && filters.minRating > 0 ? { "vote_average.gte": filters.minRating } : {}),
         },
     });
 
+    return response.data.results;
+};
+
+export const getMovieCredits = async (id: string) => {
+    const response = await axios.get(`${BASE_URL}/movie/${id}/credits`, {
+        params: {
+            api_key: API_KEY,
+            language: "en-US",
+        },
+    });
+    return response.data;
+};
+
+export const getPersonDetails = async (personId: string) => {
+    const response = await axios.get(`${BASE_URL}/person/${personId}`, {
+        params: {
+            api_key: API_KEY,
+            language: "en-US",
+        },
+    });
+    return response.data;
+};
+
+export const getPersonCredits = async (personId: string) => {
+    const response = await axios.get(`${BASE_URL}/person/${personId}/movie_credits`, {
+        params: {
+            api_key: API_KEY,
+            language: "en-US",
+        },
+    });
+    return response.data.cast;
+};
+
+export const getPersonExternalIds = async (personId: string) => {
+    const response = await axios.get(`${BASE_URL}/person/${personId}/external_ids`, {
+        params: {
+            api_key: API_KEY,
+            language: "en-US",
+        },
+    });
+    return response.data;
+};
+
+export const searchPeople = async (query: string) => {
+    const response = await axios.get(`${BASE_URL}/search/person`, {
+        params: {
+            api_key: API_KEY,
+            query,
+            language: "en-US",
+            page: 1,
+        },
+    });
+
+    return response.data.results;
+};
+export const getPopularTVShows = async () => {
+    const response = await axios.get(`${BASE_URL}/tv/popular`, {
+        params: {
+            api_key: API_KEY,
+            language: "en-US",
+            page: 1,
+        },
+    });
+    return response.data.results;
+};
+
+export const getUpcomingMovies = async () => {
+    const response = await axios.get(`${BASE_URL}/movie/upcoming`, {
+        params: {
+            api_key: API_KEY,
+            language: "en-US",
+            page: 1,
+        },
+    });
     return response.data.results;
 };

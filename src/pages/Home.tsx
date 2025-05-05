@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
-import { discoverMovies, getPopularMovies } from "../services/tmdb";
+import {
+  discoverMovies,
+  getPopularMovies,
+  getPopularTVShows,
+  getUpcomingMovies,
+} from "../services/tmdb";
 import MovieCard from "../components/MovieCard";
+import CarouselSection from "../components/CarouselSection";
 import { useLocation } from "react-router-dom";
 
 interface Movie {
@@ -11,34 +17,98 @@ interface Movie {
   genre_names?: string[];
 }
 
-const Home = () => {
+export const Home = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [tvShows, setTvShows] = useState([]);
+  const [upcomingMovies, setUpcomingMovies] = useState([]);
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const showTopRated = params.get("topRated") === "true";
   const selectedGenres = params.get("genres")?.split(",") || [];
+  const minRatingParam = params.get("minRating");
+  const minRating = minRatingParam ? parseFloat(minRatingParam) : 0;
+
+  useEffect(() => {
+    setPage(1);
+    setMovies([]);
+    setHasMore(true);
+
+    const fetchExtraSections = async () => {
+      const tv = await getPopularTVShows();
+      const upcoming = await getUpcomingMovies();
+      setTvShows(tv);
+      setUpcomingMovies(upcoming);
+    };
+
+    fetchExtraSections();
+  }, [location.search]);
 
   useEffect(() => {
     const fetchMovies = async () => {
-      if (showTopRated || selectedGenres.length > 0) {
-        const data = await discoverMovies({
-          genres: selectedGenres,
-          topRated: showTopRated,
-        });
-        setMovies(data);
-      } else {
-        const data = await getPopularMovies();
-        setMovies(data);
+      if (isLoading || !hasMore) return;
+      setIsLoading(true);
+
+      const fetchFn =
+        showTopRated || selectedGenres.length > 0 || minRating > 0
+          ? discoverMovies
+          : getPopularMovies;
+
+      const data = await fetchFn({
+        genres: selectedGenres,
+        topRated: showTopRated,
+        minRating,
+        page,
+      });
+
+      setMovies((prev) => {
+        const newMovies = page === 1 ? data : [...prev, ...data];
+        const uniqueMovies = Array.from(
+          new Map(newMovies.map((movie) => [movie.id, movie])).values()
+        );
+        return uniqueMovies;
+      });
+      setHasMore(data.length >= 10);
+      setIsLoading(false);
+    };
+
+    fetchMovies();
+  }, [showTopRated, selectedGenres, location.search, page]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + window.scrollY >=
+          document.body.offsetHeight - 100 &&
+        !isLoading &&
+        hasMore
+      ) {
+        setPage((prev) => prev + 1);
       }
     };
-    fetchMovies();
-  }, [showTopRated, selectedGenres]);
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isLoading, hasMore]);
 
   return (
-    <div className="min-h-screen p-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 bg-white dark:bg-black">
-      {movies.map((movie) => (
-        <MovieCard key={movie.id} movie={movie} />
-      ))}
+    <div className="bg-white dark:bg-black">
+      {selectedGenres.length === 0 && !showTopRated && minRating === 0 && (
+        <>
+          <CarouselSection title="Upcoming Movies" items={upcomingMovies} />
+          <CarouselSection title="Popular TV Shows" items={tvShows} />
+        </>
+      )}
+      <h2 className="text-2xl font-bold px-8 pt-6  text-black dark:text-white">
+        Popular Movies
+      </h2>
+      <div className="min-h-screen p-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 bg-white dark:bg-black">
+        {movies.map((movie) => (
+          <MovieCard key={movie.id} movie={movie} />
+        ))}
+      </div>
     </div>
   );
 };
