@@ -7,9 +7,16 @@ interface Movie {
   title: string;
   poster_path: string;
   vote_average: number;
+  type?: string;
 }
 
-const MovieCard = ({ movie }: { movie: Movie }) => {
+const MovieCard = ({
+  movie,
+  type = "movie",
+}: {
+  movie: Movie;
+  type?: string;
+}) => {
   const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
@@ -41,7 +48,7 @@ const MovieCard = ({ movie }: { movie: Movie }) => {
       >
         {isFavorite ? <AiFillHeart /> : <AiOutlineHeart />}
       </button>
-      <Link to={`/movie/${movie.id}`}>
+      <Link to={`/${type}/${movie.id}`}>
         <div className="bg-white dark:bg-gray-900 text-black dark:text-white rounded overflow-hidden shadow-lg hover:scale-105 transition-transform duration-300">
           <img
             src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}

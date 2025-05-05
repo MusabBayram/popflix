@@ -5,6 +5,7 @@ import {
   getSimilarMovies,
   getMovieTrailer,
   getMovieCredits,
+  getMovieReviews,
 } from "../services/tmdb";
 import SimilarMovies from "../components/SimilarMovies";
 import RecentMovies from "../components/RecentMovies";
@@ -28,6 +29,7 @@ function MovieDetail() {
   const [credits, setCredits] = useState<{ cast: any[]; crew: any[] } | null>(
     null
   );
+  const [reviews, setReviews] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchMovie = async () => {
@@ -40,6 +42,8 @@ function MovieDetail() {
         setSimilarMovies(similar);
         const creditsData = await getMovieCredits(id);
         setCredits(creditsData);
+        const fetchedReviews = await getMovieReviews(id);
+        setReviews(fetchedReviews);
       }
     };
     fetchMovie();
@@ -164,6 +168,26 @@ function MovieDetail() {
               allowFullScreen
               className="w-full h-full rounded-lg shadow-lg"
             />
+          </div>
+        </div>
+      )}
+      {reviews.length > 0 && (
+        <div className="relative z-10 max-w-6xl mx-auto px-6 pb-16">
+          <h2 className="text-2xl font-semibold text-white mb-4">💬 Reviews</h2>
+          <div className="space-y-4">
+            {reviews.slice(0, 5).map((review) => (
+              <div
+                key={review.id}
+                className="bg-white/10 p-4 rounded-lg shadow-md"
+              >
+                <p className="text-yellow-400 font-semibold mb-1">
+                  {review.author}
+                </p>
+                <p className="text-gray-200 text-sm leading-relaxed">
+                  {review.content}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       )}

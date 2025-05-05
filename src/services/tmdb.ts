@@ -191,3 +191,71 @@ export const getUpcomingMovies = async () => {
     });
     return response.data.results;
 };
+
+export const getMovieReviews = async (id: string) => {
+    const response = await axios.get(`${BASE_URL}/movie/${id}/reviews`, {
+        params: {
+            api_key: API_KEY,
+            language: "en-US",
+            page: 1,
+        },
+    });
+    return response.data.results;
+};
+
+export const getTVDetails = async (id: string) => {
+    const response = await axios.get(`${BASE_URL}/tv/${id}`, {
+        params: {
+            api_key: API_KEY,
+            language: "en-US",
+        },
+    });
+    return response.data;
+};
+
+export const getTVTrailer = async (id: string) => {
+    const response = await axios.get(`${BASE_URL}/tv/${id}/videos`, {
+        params: {
+            api_key: API_KEY,
+            language: "en-US",
+        },
+    });
+
+    const trailers = response.data.results.filter(
+        (video: any) => video.type === "Trailer" && video.site === "YouTube"
+    );
+
+    return trailers.length > 0 ? trailers[0].key : null;
+};
+
+export const getSimilarTVShows = async (id: string) => {
+    const response = await axios.get(`${BASE_URL}/tv/${id}/similar`, {
+        params: {
+            api_key: API_KEY,
+            language: "en-US",
+            page: 1,
+        },
+    });
+    return response.data.results;
+};
+
+export const getTVCredits = async (id: string) => {
+    const response = await axios.get(`${BASE_URL}/tv/${id}/credits`, {
+        params: {
+            api_key: API_KEY,
+            language: "en-US",
+        },
+    });
+    return response.data;
+};
+
+export const getTVReviews = async (id: string) => {
+    const response = await axios.get(`${BASE_URL}/tv/${id}/reviews`, {
+        params: {
+            api_key: API_KEY,
+            language: "en-US",
+            page: 1,
+        },
+    });
+    return response.data.results;
+};

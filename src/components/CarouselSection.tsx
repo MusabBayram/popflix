@@ -43,7 +43,7 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({ title, items }) => {
             key={item.id}
             className="shrink-0 w-[160px] sm:w-[180px] md:w-[200px] lg:w-[220px] xl:w-[240px]"
           >
-            <MovieCard movie={item} />
+            <MovieCard movie={item} type={item.name ? "tv" : "movie"} />
           </div>
         ))}
       </div>

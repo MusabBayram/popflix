@@ -5,6 +5,7 @@ import Search from "./pages/Search";
 import Navbar from "./components/Navbar";
 import Favorites from "./pages/Favorites";
 import PersonDetailPage from "./pages/PersonDetail";
+import TVDetail from "./pages/TVDetail";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/search" element={<Search />} />
         <Route path="/favorites" element={<Favorites />} />
         <Route path="/person/:id" element={<PersonDetailPage />} />
+        <Route path="/tv/:id" element={<TVDetail />} />
       </Routes>
     </Router>
   );
