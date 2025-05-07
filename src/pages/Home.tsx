@@ -60,15 +60,14 @@ export const Home = () => {
         genres: selectedGenres,
         topRated: showTopRated,
         minRating,
-        page,
       });
 
-      setMovies((prev) => {
+      setMovies((prev: Movie[]): Movie[] => {
         const newMovies = page === 1 ? data : [...prev, ...data];
         const uniqueMovies = Array.from(
-          new Map(newMovies.map((movie) => [movie.id, movie])).values()
+          new Map(newMovies.map((movie: Movie) => [movie.id, movie])).values()
         );
-        return uniqueMovies;
+        return uniqueMovies as Movie[];
       });
       setHasMore(data.length >= 10);
       setIsLoading(false);
@@ -101,9 +100,12 @@ export const Home = () => {
           <CarouselSection title="Popular TV Shows" items={tvShows} />
         </>
       )}
-      <h2 className="text-2xl font-bold px-8 pt-6  text-black dark:text-white">
-        Popular Movies
-      </h2>
+      {selectedGenres.length === 0 && !showTopRated && minRating === 0 && (
+        <h2 className="text-2xl font-bold px-8 pt-6  text-black dark:text-white">
+          Popular Movies
+        </h2>
+      )}
+
       <div className="min-h-screen p-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 bg-white dark:bg-black">
         {movies.map((movie) => (
           <MovieCard key={movie.id} movie={movie} />

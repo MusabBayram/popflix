@@ -154,8 +154,8 @@ function TVDetail() {
           </div>
         </div>
       )}
-      <SimilarMovies movies={similarTV} />
-      <RecentMovies movies={recentTV} />
+      <SimilarMovies movies={similarTV as any} />
+      <RecentMovies movies={recentTV as any} />
     </div>
   );
 }

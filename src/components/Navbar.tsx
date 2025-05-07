@@ -13,20 +13,10 @@ const Navbar = () => {
   const [theme, setTheme] = useState(
     () => localStorage.getItem("theme") || "dark"
   );
-  const [hasFavorites, setHasFavorites] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [showTopRated, setShowTopRated] = useState(false);
-  const [includeRecent, setIncludeRecent] = useState(false);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [minRating, setMinRating] = useState(0);
-
-  useEffect(() => {
-    const stored = localStorage.getItem("favorites");
-    if (stored) {
-      const favs = JSON.parse(stored) as number[];
-      setHasFavorites(favs.length > 0);
-    }
-  }, []);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
@@ -54,18 +44,6 @@ const Navbar = () => {
       params.set("topRated", "true");
     } else {
       params.delete("topRated");
-    }
-    navigate(`/?${params.toString()}`);
-  };
-
-  const handleToggleRecent = () => {
-    const newVal = !includeRecent;
-    setIncludeRecent(newVal);
-    const params = new URLSearchParams(location.search);
-    if (newVal) {
-      params.set("recent", "true");
-    } else {
-      params.delete("recent");
     }
     navigate(`/?${params.toString()}`);
   };
@@ -167,9 +145,7 @@ const Navbar = () => {
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
         showTopRated={showTopRated}
-        includeRecent={includeRecent}
         onToggleTopRated={handleToggleTopRated}
-        onToggleRecent={handleToggleRecent}
         selectedGenres={selectedGenres}
         onGenreChange={handleGenreChange}
         minRating={minRating}

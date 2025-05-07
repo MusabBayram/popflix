@@ -4,9 +4,7 @@ interface FilterModalProps {
   isOpen: boolean;
   onClose: () => void;
   showTopRated: boolean;
-  includeRecent: boolean;
   onToggleTopRated: () => void;
-  onToggleRecent: () => void;
   selectedGenres: string[];
   onGenreChange: (genre: string) => void;
   minRating: number;
@@ -17,9 +15,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
   isOpen,
   onClose,
   showTopRated,
-  includeRecent,
   onToggleTopRated,
-  onToggleRecent,
   selectedGenres,
   onGenreChange,
   minRating,

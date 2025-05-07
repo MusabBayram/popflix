@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar";
 import Favorites from "./pages/Favorites";
 import PersonDetailPage from "./pages/PersonDetail";
 import TVDetail from "./pages/TVDetail";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/favorites" element={<Favorites />} />
         <Route path="/person/:id" element={<PersonDetailPage />} />
         <Route path="/tv/:id" element={<TVDetail />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );
